@@ -1,20 +1,21 @@
-# Xena Live India — Play Store Complete Release Package
+# Xena Live India — Render Fixed Server
 
-This is the production-preparation package for Xena Live India. It contains the Android app, Node.js real-time backend, legal pages, moderation endpoints and a Play Store release workflow.
+This package is the **server-only deployment package** for Render. It deliberately contains a root `Dockerfile`, root `package.json`, and root `render.yaml` so Render does not mis-detect the project as Go.
 
-## Real features included
-- Server signup/login with bcrypt + JWT.
-- Real users and live-room state.
-- Socket.IO room presence and chat.
-- WebRTC camera + microphone streaming with configurable STUN/TURN.
-- Follow/unfollow.
-- Server-controlled coins, diamonds and gifts.
-- Google Play Billing Library 9.1.0 client and server purchase verification endpoint.
-- Report/block and account deletion.
-- Privacy policy, terms, community guidelines and account-deletion page.
-- Android target API 36 and release AAB workflow.
+## Deploy on Render
 
-## Important
-This repository is **code-complete for deployment preparation**, but no software package can create your Google Play developer account, domain, TURN service, payment products, signing identity or Google service-account permissions for you. Those are account/credential steps that must be completed by the owner.
+1. Create a **new Web Service** from the repository containing this package.
+2. Select **Docker** as the runtime.
+3. If using the Blueprint, use the included `render.yaml`.
+4. Do not set a Go build command.
+5. After deployment, open `/health`. It should return JSON with `ok: true`.
 
-For the exact remaining launch steps see `PLAY_STORE_CHECKLIST.md`.
+## Required for full production features
+
+The core server starts without third-party credentials. Google/Facebook OAuth, Google Play purchase verification, and TURN-based WebRTC require their corresponding environment variables from `.env.example`.
+
+The default data store is a JSON file. On ephemeral hosting it is not a durable production database; use a persistent database/storage before real users or paid transactions.
+
+## Android app
+
+The Android APK must be built with the final HTTPS server URL. The current Android source uses `xenaServerUrl` at build time; hosting the server alone does not rewrite an already-built APK.
